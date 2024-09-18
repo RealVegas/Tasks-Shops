@@ -1,55 +1,56 @@
 # Task manager
-# self.time = datetime.strftime(datetime.now(), 'H%:M%')
-
-from datetime import datetime
-
 
 class Task:
 
-    def __init__(self, name: str, deadline: str, status: bool = True) -> None:
-        self.name = name
-        self.deadline = deadline
-        self.status = status
-
-    def add_task(self) -> dict[str, str]:
-        self.name = input('Введите название задачи: ')
-        self.deadline = input('Введите срок выполнения задачи (в формате Час:Мин): ')
-        return {'name': self.name, 'deadline': self.deadline}
-
-class TaskManager(Task):
-
-    def __init__(self, name, deadline, status=True):
-        super().__init__(name, deadline, status=True)
-        self.tasks: list[dict] = []
+    def __init__(self) -> None:
+        self.task_list: list[dict] = []
 
     def add_task(self) -> None:
-        one_task = super().add_task()
-        self.tasks.append(one_task)
+        task_name: str = input('Введите название задачи: ')
+        task_deadline: str = input('Введите срок выполнения задачи (в формате Час:Мин): ')
+        task_status: bool = True
 
-    def set_complete(self, index) -> None:
-        self.tasks[index]['status'] = False
+        self.task_list.append({'name': task_name, 'deadline': task_deadline, 'status': task_status})
 
-    def get_active(self) -> None:
-        for item in self.tasks:
+    def set_complete(self) -> None:
+        task_index: str = input('Введите номер задачи: ')
+
+        if task_index.isdigit() and int(task_index) <= len(self.task_list):
+            self.task_list[int(task_index) - 1]['status'] = False
+
+    def __str__(self) -> str:
+        active_list: str = ''
+        for number, item in enumerate(self.task_list, 1):
             if item['status']:
-                print(f'Название задачи: {self.name}\nCрок выполнения: {self.deadline}\n')
+                active_list += f'{number}. Название задачи: {item["name"]}, Cрок выполнения: {item["deadline"]}\n'
 
-    def __str__(self):
-        for item in self.tasks:
-            if item['status']:
-                print(f'Название задачи: {self.name}\nCрок выполнения: {self.deadline}\n')
-
-                return f'Название задачи: {self.name}\nCрок выполнения: {self.deadline}\n'
+        return active_list
 
 
+tsk = Task()
 
-TaskManager(name='Задача1', deadline='11:00')
-TaskManager.add_task
-# Task(name='Задача2', deadline='12:00')
-# Task(name='Задача3', deadline='14:00')
-# Task(name='Задача4', deadline='15:00')
-# Task(name='Задача5', deadline='18:00')
+print('1. Добавить задачу в список')
+print('2. Отметить задачу как выполненную')
+print('3. Вывести список активных задач')
+print('4. Закончить работу\n')
 
+work = True
 
+while work:
+    option = input('Выберите действие: ')
 
-# print(TaskManager(name='Задача6', deadline='19:00'))
+    match option:
+        case '1':
+            tsk.add_task()
+            print('Задача добавлена в список\n')
+        case '2':
+            tsk.set_complete()
+            print('Задача помечена как выполненная\n')
+        case '3':
+            print('Список задач:')
+            print(tsk)
+        case '4':
+            print('Программа завершает свою работу')
+            work = False
+        case _:
+            print('Такого действия нет в списке, повторите ввод')
